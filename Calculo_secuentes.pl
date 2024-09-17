@@ -70,7 +70,14 @@ secuentes([F1 or F2 | Gamma], Delta) :-
 	write(Delta).
 
 % Conjuncion
- 
+secuentes(Gamma, [F1 and F2 | Delta]) :-
+    union([F1 , F2], Delta,X),
+    secuentes(Gamma,X),
+    nl,
+    write(Gamma),
+    write(' ⊢ '),
+	write(F1 and F2 | Delta).
+
 
 % Implicacion
 secuentes([F1 implies F2 | Gamma], Delta) :-
@@ -102,9 +109,9 @@ secuentes(Gamma,[neg F|Delta]) :-
     write([neg F|Delta]).
 
 % Disyunción
-%S.P.
 secuentes(Gamma, [F1 or F2 | Delta]) :-
-    secuentes(Gamma,[F1 | F2 | Delta]),
+    union([F1 , F2], Delta,X),
+    secuentes(Gamma,X),
     nl,
     write(Gamma),
     write(' ⊢ '),
