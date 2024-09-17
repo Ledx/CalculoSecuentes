@@ -1,0 +1,6 @@
+Ejemplos de corrida
+
+secuentes([a],[a]).
+secuentes([a or a],[a]).
+secuentes([a implies a],[a]).
+secuentes([a],[a and a]).
