@@ -5,7 +5,6 @@
 :- op(2, xfx, implies).
 :- op(2, xfx, dimplies).
 
-%doc_latex()
 
 % Reglas de transformación
 trans(P,P) :- atom(P).
