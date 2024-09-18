@@ -38,7 +38,17 @@ secuentes([F],[F]) :-
 %%% Izquierda
 
 % Debilitamiento
+ 
+
 % Contraccion
+secuentes([F1 , F1 | Gamma], Delta) :-
+	union([F1 , F1], Gamma,X),    
+    secuentes([X | Gamma],Delta),
+    nl,
+    write([F1, F1 | Gamma]),
+    write(' ⊢ '),
+	write([F1 | Delta]).
+ 
 % Intercambio
 
 
@@ -46,6 +56,14 @@ secuentes([F],[F]) :-
 
 % Debilitamiento
 % Contraccion
+secuentes(Gamma, [F1 , F1 | Delta]) :-
+	union([F1 , F1], Delta,X),    
+    secuentes(Gamma,[X | Delta]),
+    nl,
+    write([F1| Gamma]),
+    write(' ⊢ '),
+	write([F1, F1 | Delta]).
+
 % Intercambio
 
 %%%%% Reglas lógicas
@@ -90,8 +108,10 @@ secuentes([F1 implies F2 | Gamma], Delta) :-
  
 % Doble implicacion
 secuentes([F1 dimplies F2 | Gamma], Delta) :-
-    secuentes([F1 | Gamma],Delta),
-    secuentes([F2 | Gamma],Delta),
+    union([F1 , F2], Gamma,X),
+    union([F1 , F2], Delta,Y),
+    secuentes([X | Gamma],Delta),
+    secuentes([Y | Gamma],Delta),
     nl, nl,
     write([F1 dimplies F2 | Gamma]),
     write(' ⊢ '),
@@ -127,7 +147,20 @@ secuentes(Gamma, [F1 and F2 | Delta]) :-
 	write([F1 and F2 | Delta]).
 
 % Implicacion
- 
+secuentes(Gamma, [F1 implies F2 | Delta]) :-
+    union([F1], Gamma,X),
+    union([F2], Delta,Y),
+    secuentes(X,Y),
+    nl,
+    write(X),
+    write(' ⊢ '),
+	write(F1 implies F2 | Y).
 
 % Doble implicacion
-
+secuentes([F1 dimplies F2 | Gamma], Delta) :-
+    secuentes([F1 | Gamma],Delta),
+    secuentes([F2 | Gamma],Delta),
+    nl, nl,
+    write([F1 dimplies F2 | Gamma]),
+    write(' ⊢ '),
+	write(Delta).
