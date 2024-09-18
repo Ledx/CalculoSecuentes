@@ -40,11 +40,11 @@ secuentes([F],[F]) :-
  
 
 % Contraccion
-secuentes([F1 , F1 | Gamma], Delta) :-
-	union([F1 , F1], Gamma,X),    
+secuentes([F1 , F2 | Gamma], Delta) :-
+	union([F1 , F2], Gamma,X),    
     secuentes([X | Gamma],Delta),
     nl,
-    write([F1, F1 | Gamma]),
+    write([F1, F2 | Gamma]),
     write(' ⊢ '),
 	write([F1 | Delta]).
  
@@ -55,13 +55,13 @@ secuentes([F1 , F1 | Gamma], Delta) :-
 
 % Debilitamiento
 % Contraccion
-secuentes(Gamma, [F1 , F1 | Delta]) :-
-	union([F1 , F1], Delta,X),    
+secuentes(Gamma, [F1 , F2 | Delta]) :-
+	union([F1 , F2], Delta,X),    
     secuentes(Gamma,[X | Delta]),
     nl,
     write([F1| Gamma]),
     write(' ⊢ '),
-	write([F1, F1 | Delta]).
+	write([F1, F2 | Delta]).
 
 % Intercambio
 
