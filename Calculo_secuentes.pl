@@ -163,3 +163,16 @@ secuentes([F1 dimplies F2 | Gamma], Delta) :-
     write([F1 dimplies F2 | Gamma]),
     write(' ⊢ '),
 	write(Delta).
+	
+% Reemplaza un carácter en una lista
+
+reemplazar(_, _, [], []).  % Caso base: lista vacía
+reemplazar(X, Y, [X|Resto], [Y|RestoResultado]) :-  % Si el carácter a buscar es el primero
+    reemplazar(X, Y, Resto, RestoResultado).
+reemplazar(X, Y, [Cabeza|Resto], [Cabeza|RestoResultado]) :-  % Si no es el carácter a buscar
+    Cabeza \= X,
+    reemplazar(X, Y, Resto, RestoResultado).
+
+% Ejemplo de uso:
+% Resultado = [b, c, b, d].
+% reemplazar(a, z, [F_a, c, [a], d], Resultado).
