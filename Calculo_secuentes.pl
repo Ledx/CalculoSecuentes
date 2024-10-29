@@ -4,6 +4,8 @@
 :- op(2, xfx, and).
 :- op(2, xfx, implies).
 :- op(2, xfx, dimplies).
+:- op(1, fx, para_todos).
+:- op(1, fx, existe).
 
 
 % Reglas de transformación
@@ -116,6 +118,9 @@ secuentes([F1 dimplies F2 | Gamma], Delta) :-
     write(' ⊢ '),
 	write(Delta).
 
+% Existencial
+% Universal
+
 
 %%% Derecha
 
@@ -163,21 +168,29 @@ secuentes([F1 dimplies F2 | Gamma], Delta) :-
     write([F1 dimplies F2 | Gamma]),
     write(' ⊢ '),
 	write(Delta).
+	
+% Existencial
+% Universal
 
-% Auxiliares
+%%%%% Auxiliares
 
 % Reemplaza la variable Viejo en una lista con Nuevo, el resultado se guarda en NuevaLista.
-% reemplazar(+List, +Viejo, +Nuevo, -NuevaLista)
-reemplazar([], _, _, []). % Caso base, lista vacia.
+% reemplazar(+Lista, +Viejo, +Nuevo, -NuevaLista)
 
+% Caso base, si es una lista vacia, el resultado es una lista vacia.
+reemplazar([], _, _, []). 
+
+% Caso reemplazo: Si H coincide con Viejo, este es reemplazado por Nuevo y el predicado continua con T.
 reemplazar([Viejo|T], Viejo, Nuevo, [Nuevo|NT]) :-
     reemplazar(T, Viejo, Nuevo, NT). % Remmplazamos en T.
 
+% Manejo de listas anidadas: Si H no es Viejo, el predicado revisa si es una lista. Si lo es se procesa H recursivamente; si no, H queda igual.
 reemplazar([H|T], Viejo, Nuevo, [NH|NT]) :-
     H \= Viejo, % Conservamos H si no es Viejo.
     reemplazar(H, Viejo, Nuevo, NH), % Verificamos si H es una lista.
     reemplazar(T, Viejo, Nuevo, NT).
 
+% Caso de reemplazo atomico: Si el elementop es Viejo, se reemplaza con Nuevo. Si no es Viejo o una lista, se deja como estaba.
 reemplazar(H, Viejo, Nuevo, Nuevo) :- 
     H == Viejo. % Reemplazamos H si es Viejo
 
@@ -186,4 +199,7 @@ reemplazar(H, Viejo, Nuevo, H) :-
     \+ is_list(H). % Revisamos si H es una lista
 
 % ?- reemplazar([1, [2,[2]], 3, 2, 4], 2, 5, NuevaLista).
+
+
+
 
