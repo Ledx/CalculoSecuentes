@@ -163,3 +163,25 @@ secuentes([F1 dimplies F2 | Gamma], Delta) :-
     write([F1 dimplies F2 | Gamma]),
     write(' ⊢ '),
 	write(Delta).
+
+
+% Reemplaza la variable Viejo en una lista con Nuevo, el resultado se guarda en NuevaLista.
+% reemplazar(+List, +Viejo, +Nuevo, -NuevaLista)
+reemplazar([], _, _, []). % Caso base, lista vacia.
+
+reemplazar([Viejo|T], Viejo, Nuevo, [Nuevo|NT]) :-
+    reemplazar(T, Viejo, Nuevo, NT). % Remmplazamos en T.
+
+reemplazar([H|T], Viejo, Nuevo, [NH|NT]) :-
+    H \= Viejo, % Conservamos H si no es Viejo.
+    reemplazar(H, Viejo, Nuevo, NH), % Verificamos si H es una lista.
+    reemplazar(T, Viejo, Nuevo, NT).
+
+reemplazar(H, Viejo, Nuevo, Nuevo) :- 
+    H == Viejo. % Reemplazamos H si es Viejo
+
+reemplazar(H, Viejo, Nuevo, H) :- 
+    H \= Viejo, % Conservamos H si no es Viejo
+    \+ is_list(H). % Revisamos si H es una lista
+
+% ?- reemplazar([1, [2,[2]], 3, 2, 4], 2, 5, NuevaLista).
