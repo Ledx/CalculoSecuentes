@@ -164,6 +164,7 @@ secuentes([F1 dimplies F2 | Gamma], Delta) :-
     write(' ⊢ '),
 	write(Delta).
 
+% Auxiliares
 
 % Reemplaza la variable Viejo en una lista con Nuevo, el resultado se guarda en NuevaLista.
 % reemplazar(+List, +Viejo, +Nuevo, -NuevaLista)
