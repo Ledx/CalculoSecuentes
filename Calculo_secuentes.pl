@@ -185,3 +185,4 @@ reemplazar(H, Viejo, Nuevo, H) :-
     \+ is_list(H). % Revisamos si H es una lista
 
 % ?- reemplazar([1, [2,[2]], 3, 2, 4], 2, 5, NuevaLista).
+
