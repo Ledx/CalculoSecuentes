@@ -2,12 +2,17 @@
 :- op(1, fx, neg).
 :- op(2, xfx, or).
 :- op(2, xfx, and).
-:- op(2, xfx, implica).
-:- op(2, xfx, dimplica).
-:- op(1, fx, para_todos).
+:- op(2, xfx, implies).
+:- op(2, xfx, dimplies).
+:- op(1, fx, para_todo).
 :- op(1, fx, existe).
-:- op(1, xfx, F).
-:- op(1, xfx, R).
+
+% Constantes a utilizar
+constante(A).
+constante(B).
+constante(C).
+
+variable(X) :- atom(X).
 
 
 % Reglas de transformación
@@ -22,12 +27,12 @@ trans(F1 and F2, neg(neg(R1) or neg(R2))) :-
     trans(F1,R1),
     trans(F2,R2).
 
-trans(F1 implica F2, (neg(R1) or R2)) :-
+trans(F1 implies F2, (neg(R1) or R2)) :-
     trans(F1,R1),
     trans(F2,R2).
 
-trans(F1 dimplica F2, R) :-
-    trans((F1 implica F2) and (F2 implica F1), R).
+trans(F1 dimplies F2, R) :-
+    trans((F1 implies F2) and (F2 implies F1), R).
 
 %%%%% Secuente inicial
 secuentes([F],[F]) :-
@@ -41,16 +46,13 @@ secuentes([F],[F]) :-
 %%% Izquierda
 
 % Debilitamiento
- 
+secuentes([F|Gamma], Delta) :-
+    secuentes(Gamma, Delta),
+    secuentes([F|Gamma], Delta).
 
 % Contraccion
-secuentes([F1 , F2 | Gamma], Delta) :-
-	union([F1 , F2], Gamma,X),    
-    secuentes([X | Gamma],Delta),
-    nl,
-    write([F1, F2 | Gamma]),
-    write(' ⊢ '),
-	write([F1 | Delta]).
+secuentes([F, F|Gamma] :- Delta).
+
  
 % Intercambio
 
@@ -58,6 +60,10 @@ secuentes([F1 , F2 | Gamma], Delta) :-
 %%% Derecha
 
 % Debilitamiento
+secuentes(Gamma, [F1 | Delta]) :-
+    secuentes(Gamma, Delta),
+    secuentes(Gamma, [F1 | Delta]).
+
 % Contraccion
 secuentes(Gamma, [F1 , F2 | Delta]) :-
 	union([F1 , F2], Delta,X),    
@@ -101,28 +107,42 @@ secuentes(Gamma, [F1 and F2 | Delta]) :-
 
 
 % Implicacion
-secuentes([F1 implica F2 | Gamma], Delta) :-
+secuentes([F1 implies F2 | Gamma], Delta) :-
     secuentes([F1 | Gamma],Delta),
     secuentes([F2 | Gamma],Delta),
     nl, nl,
-    write([F1 implica F2 | Gamma]),
+    write([F1 implies F2 | Gamma]),
     write(' ⊢ '),
 	write(Delta).
  
 % Doble implicacion
-secuentes([F1 dimplica F2 | Gamma], Delta) :-
+secuentes([F1 dimplies F2 | Gamma], Delta) :-
     union([F1 , F2], Gamma,X),
     union([F1 , F2], Delta,Y),
     secuentes([X | Gamma],Delta),
     secuentes([Y | Gamma],Delta),
     nl, nl,
-    write([F1 dimplica F2 | Gamma]),
+    write([F1 dimplies F2 | Gamma]),
     write(' ⊢ '),
 	write(Delta).
 
-% Existencial
+% Existencial (Restrictivo)
+secuentes([para_todo F|Gamma], Delta) :- 
+    secuentes([F|Gamma],Delta),
+    constante(C),
+    F = [H|T],
+    reemplazar(F, H, C, Delta),
+    secuentes(Gamma, Delta).
 
-% Universal
+
+% Universal (Libre)
+secuentes( [existe F|Gamma],Delta) :- 
+    secuentes([F | Gamma], Delta),
+    F = [H|T],
+	\+ variable(H),
+    constante(C),
+    reemplazar(F, H, C, Delta),
+    secuentes(Gamma, Delta).
 
 
 %%% Derecha
@@ -154,28 +174,42 @@ secuentes(Gamma, [F1 and F2 | Delta]) :-
 	write([F1 and F2 | Delta]).
 
 % Implicacion
-secuentes(Gamma, [F1 implica F2 | Delta]) :-
+secuentes(Gamma, [F1 implies F2 | Delta]) :-
     union([F1], Gamma,X),
     union([F2], Delta,Y),
     secuentes(X,Y),
     nl,
     write(X),
     write(' ⊢ '),
-	write(F1 implica F2 | Y).
+	write(F1 implies F2 | Y).
 
 % Doble implicacion
-secuentes([F1 dimplica F2 | Gamma], Delta) :-
+secuentes([F1 dimplies F2 | Gamma], Delta) :-
     secuentes([F1 | Gamma],Delta),
     secuentes([F2 | Gamma],Delta),
     nl, nl,
-    write([F1 dimplica F2 | Gamma]),
+    write([F1 dimplies F2 | Gamma]),
     write(' ⊢ '),
 	write(Delta).
-	
-% Existencial
 
-% Universal
 
+% Existencial (Libre)
+secuentes(Gamma, [existe F|Delta]) :- 
+    secuentes(Gamma, [F | Delta]),
+    constante(C),
+    F = [H|T],
+    reemplazar(F, H, C, Delta),
+    secuentes(Gamma, Delta).
+
+
+% Universal (Restrictivo)
+secuentes(Gamma, [para_todo F|Delta]) :- 
+    secuentes(Gamma, [F | Delta]),
+    F = [H|T],
+	\+ variable(H),
+    constante(C),
+    reemplazar(F, H, C, Delta),
+    secuentes(Gamma, Delta).
 
 %%%%% Auxiliares
 
@@ -202,6 +236,4 @@ reemplazar(H, Viejo, Nuevo, Nuevo) :-
 reemplazar(H, Viejo, Nuevo, H) :- 
     H \= Viejo, % Conservamos H si no es Viejo
     \+ is_list(H). % Revisamos si H es una lista
-
-% ?- reemplazar([1, [2,[2]], 3, 2, 4], 2, 5, NuevaLista).
 
