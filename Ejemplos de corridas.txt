@@ -4,4 +4,4 @@ secuentes([a],[a]).
 secuentes([a or a],[a]).
 secuentes([a implica a],[a]).
 secuentes([a],[a and a]).
-reemplazar([1, [2,[2]],2, 2, 4], 2, 5), NuevaLista).
+reemplazar([1, [2,[2]],2, 2, 4], 2, 5, NuevaLista).

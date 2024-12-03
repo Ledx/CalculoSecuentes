@@ -2,8 +2,8 @@
 :- op(1, fx, neg).
 :- op(2, xfx, or).
 :- op(2, xfx, and).
-:- op(2, xfx, implies).
-:- op(2, xfx, dimplies).
+:- op(2, xfx, implica).
+:- op(2, xfx, dimplica).
 :- op(1, fx, para_todo).
 :- op(1, fx, existe).
 
@@ -27,12 +27,12 @@ trans(F1 and F2, neg(neg(R1) or neg(R2))) :-
     trans(F1,R1),
     trans(F2,R2).
 
-trans(F1 implies F2, (neg(R1) or R2)) :-
+trans(F1 implica F2, (neg(R1) or R2)) :-
     trans(F1,R1),
     trans(F2,R2).
 
-trans(F1 dimplies F2, R) :-
-    trans((F1 implies F2) and (F2 implies F1), R).
+trans(F1 dimplica F2, R) :-
+    trans((F1 implica F2) and (F2 implica F1), R).
 
 %%%%% Secuente inicial
 secuentes([F],[F]) :-
@@ -107,22 +107,22 @@ secuentes(Gamma, [F1 and F2 | Delta]) :-
 
 
 % Implicacion
-secuentes([F1 implies F2 | Gamma], Delta) :-
+secuentes([F1 implica F2 | Gamma], Delta) :-
     secuentes([F1 | Gamma],Delta),
     secuentes([F2 | Gamma],Delta),
     nl, nl,
-    write([F1 implies F2 | Gamma]),
+    write([F1 implica F2 | Gamma]),
     write(' ⊢ '),
 	write(Delta).
  
 % Doble implicacion
-secuentes([F1 dimplies F2 | Gamma], Delta) :-
+secuentes([F1 dimplica F2 | Gamma], Delta) :-
     union([F1 , F2], Gamma,X),
     union([F1 , F2], Delta,Y),
     secuentes([X | Gamma],Delta),
     secuentes([Y | Gamma],Delta),
     nl, nl,
-    write([F1 dimplies F2 | Gamma]),
+    write([F1 dimplica F2 | Gamma]),
     write(' ⊢ '),
 	write(Delta).
 
@@ -174,21 +174,21 @@ secuentes(Gamma, [F1 and F2 | Delta]) :-
 	write([F1 and F2 | Delta]).
 
 % Implicacion
-secuentes(Gamma, [F1 implies F2 | Delta]) :-
+secuentes(Gamma, [F1 implica F2 | Delta]) :-
     union([F1], Gamma,X),
     union([F2], Delta,Y),
     secuentes(X,Y),
     nl,
     write(X),
     write(' ⊢ '),
-	write(F1 implies F2 | Y).
+	write(F1 implica F2 | Y).
 
 % Doble implicacion
-secuentes([F1 dimplies F2 | Gamma], Delta) :-
+secuentes([F1 dimplica F2 | Gamma], Delta) :-
     secuentes([F1 | Gamma],Delta),
     secuentes([F2 | Gamma],Delta),
     nl, nl,
-    write([F1 dimplies F2 | Gamma]),
+    write([F1 dimplica F2 | Gamma]),
     write(' ⊢ '),
 	write(Delta).
 
