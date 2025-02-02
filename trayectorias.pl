@@ -85,3 +85,5 @@ remover_elemento(X, [Head|Tail], [Head|Rest]) :-
 %inicia_calculo_trayectorias([(0=<l) and (u<a),m:=8,a>b,for([i=l,i=<u, rv(true)]),rv(false),pos],[]).
 %inicia_calculo_trayectorias([(0=<l) and (u<a),m:=8,a>b,for([i=l,i=<u, rv(true)]),rv(false),if([a=e,rv(true)]),pos],[]).
 %inicia_calculo_trayectorias([(0=<l) and (u<a),m:=8,a>b,for([i=l,i=<u,if([a=e,rv(true)])],rv(false)),rv() dimplies (aj := e)],[]).
+%inicia_calculo_trayectorias([true,if([(x > 0) and (y>0),rv(x+y)]),rv(0),rv(x+y)],[]).
+
